@@ -1,0 +1,92 @@
+import React from 'react';
+import { DashboardLayout } from '../components/dashboard';
+import Card from '../components/common/Card';
+import { TrendingUp, Calendar, BookOpen, Target } from 'lucide-react';
+
+const AnalyticsPage: React.FC = () => {
+  const stats = [
+    { label: 'Total Study Hours', value: '42.5', unit: 'hours', icon: Calendar, trend: '+12%' },
+    { label: 'Topics Covered', value: '28', unit: 'topics', icon: BookOpen, trend: '+3' },
+    { label: 'Quiz Accuracy', value: '78%', unit: 'average', icon: Target, trend: '+5%' },
+    { label: 'Placement Score', value: '82%', unit: 'current', icon: TrendingUp, trend: '+8%' },
+  ];
+
+  return (
+    <DashboardLayout>
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-4xl font-bold text-navy-800">Analytics & Progress</h1>
+          <p className="text-earth-500 mt-2">Track your learning journey and achievements</p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {stats.map((stat) => {
+            const Icon = stat.icon;
+            return (
+              <Card key={stat.label} variant="glass">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-earth-500">{stat.label}</p>
+                    <Icon size={24} className="text-brand-500" />
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <p className="text-3xl font-bold text-navy-800">{stat.value}</p>
+                    <span className="text-sm text-earth-500">{stat.unit}</span>
+                  </div>
+                  <p className="text-sm text-green-600 font-semibold">{stat.trend} this month</p>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+
+        <Card>
+          <h2 className="text-2xl font-bold text-navy-800 mb-6">Weekly Activity</h2>
+          <div className="space-y-4">
+            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+              <div key={day} className="flex items-center gap-4">
+                <span className="w-12 font-semibold text-navy-800">{day}</span>
+                <div className="flex-1 bg-earth-200 rounded-full h-4 overflow-hidden">
+                  <div
+                    className="bg-gradient-brand h-full rounded-full"
+                    style={{ width: `${Math.random() * 100}%` }}
+                  />
+                </div>
+                <span className="w-16 text-right text-sm text-earth-500">
+                  {Math.floor(Math.random() * 8)}h {Math.floor(Math.random() * 60)}m
+                </span>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        <Card>
+          <h2 className="text-2xl font-bold text-navy-800 mb-6">Learning Categories</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {[
+              { name: 'Data Structures', progress: 85 },
+              { name: 'Algorithms', progress: 72 },
+              { name: 'System Design', progress: 58 },
+              { name: 'Web Development', progress: 91 },
+              { name: 'Databases', progress: 64 },
+              { name: 'DevOps', progress: 45 },
+            ].map((category) => (
+              <div key={category.name} className="space-y-2">
+                <p className="font-semibold text-navy-800">{category.name}</p>
+                <div className="bg-earth-200 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="bg-gradient-brand h-full"
+                    style={{ width: `${category.progress}%` }}
+                  />
+                </div>
+                <p className="text-sm text-earth-500">{category.progress}%</p>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+    </DashboardLayout>
+  );
+};
+
+export default AnalyticsPage;
