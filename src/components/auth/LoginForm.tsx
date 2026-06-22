@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Mail, Lock } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Button from '../common/Button';
 import Input from '../common/Input';
 import { useAuthStore } from '../../store/authStore';
+import SupabaseConfigNotice from './SupabaseConfigNotice';
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const { login, isLoading, error, clearError } = useAuthStore();
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -21,15 +23,21 @@ const LoginForm: React.FC = () => {
     e.preventDefault();
     try {
       await login(formData.email, formData.password);
-      const returnUrl = searchParams.get('returnUrl') || '/dashboard';
+      const { user, error: storeError } = useAuthStore.getState();
+      if (storeError || !user) return;
+
+      const stateFrom = (location.state as { from?: string } | null)?.from;
+      const returnUrl = stateFrom || searchParams.get('returnUrl') || '/dashboard';
       navigate(returnUrl);
-    } catch (err) {
+    } catch {
       // Error is handled by the store
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <SupabaseConfigNotice />
+
       <div>
         <h1 className="text-4xl font-bold text-navy-800 mb-2">Welcome back</h1>
         <p className="text-earth-500">Sign in to continue to PrepMind AI</p>
@@ -64,14 +72,14 @@ const LoginForm: React.FC = () => {
       </Button>
 
       <div className="text-center space-y-2">
-        <a href="/forgot-password" className="text-sm link-hover block">
+        <Link to="/forgot-password" className="text-sm link-hover block">
           Forgot password?
-        </a>
+        </Link>
         <p className="text-sm text-earth-500">
           Don't have an account?{' '}
-          <a href="/signup" className="text-brand-500 font-semibold hover:text-brand-600">
+          <Link to="/signup" className="text-brand-500 font-semibold hover:text-brand-600">
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </form>

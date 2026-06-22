@@ -41,18 +41,22 @@ const Modal: React.FC<ModalProps> = ({
         className="absolute inset-0 bg-black bg-opacity-50 transition-opacity"
         onClick={() => closeOnBackdropClick && onClose()}
       />
-      <div className={`relative bg-white rounded-lg shadow-xl animate-scale-in ${sizeClasses[size]} w-full mx-4`}>
-        <div className="flex items-center justify-between p-6 border-b border-earth-200">
-          {title && <h2 className="text-xl font-semibold text-navy-800">{title}</h2>}
-          <button
-            onClick={onClose}
-            className="text-earth-500 hover:text-navy-800 transition-colors"
-            aria-label="Close modal"
-          >
-            <X size={24} />
-          </button>
-        </div>
-        <div className="p-6">{children}</div>
+      <div
+        className={`relative bg-white dark:bg-navy-800 rounded-lg shadow-xl animate-fade-in ${sizeClasses[size]} w-full mx-4`}
+      >
+        {title ? (
+          <div className="flex items-center justify-between p-6 border-b border-earth-200 dark:border-navy-600">
+            <h2 className="text-xl font-semibold text-navy-800 dark:text-earth-100">{title}</h2>
+            <button
+              onClick={onClose}
+              className="text-earth-500 hover:text-navy-800 dark:hover:text-earth-100 transition-colors"
+              aria-label="Close modal"
+            >
+              <X size={24} />
+            </button>
+          </div>
+        ) : null}
+        <div className={title ? 'p-6' : 'p-6 pt-8'}>{children}</div>
       </div>
     </div>
   );

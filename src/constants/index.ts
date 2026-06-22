@@ -42,7 +42,7 @@ export const PLANS = [
       'Unlimited mock interviews',
       'Coding challenge practice',
       'Company-specific prep paths',
-      ' 1-on-1 doubt sessions',
+      '1-on-1 doubt sessions',
       'Custom study plans',
       'Placement guarantee support',
     ],

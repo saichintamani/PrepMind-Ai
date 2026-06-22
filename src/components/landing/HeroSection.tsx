@@ -1,8 +1,12 @@
 import React from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../common/Button';
+import { scrollToSection } from '../../utils/scroll';
 
 const HeroSection: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="section-container pt-20 lg:pt-32">
       <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -15,7 +19,8 @@ const HeroSection: React.FC = () => {
 
             <h1 className="text-5xl md:text-6xl font-bold text-navy-800 leading-tight">
               Study Smart.<br />
-              <span className="gradient-text">Prepare Better.</span><br />
+              <span className="gradient-text">Prepare Better.</span>
+              <br />
               Get Hired.
             </h1>
 
@@ -26,11 +31,16 @@ const HeroSection: React.FC = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button variant="primary" size="lg" className="group">
+            <Button
+              variant="primary"
+              size="lg"
+              className="group"
+              onClick={() => navigate('/signup')}
+            >
               Get Started Free
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button variant="outline" size="lg">
+            <Button variant="outline" size="lg" onClick={() => scrollToSection('demo')}>
               Watch Demo
             </Button>
           </div>
@@ -54,10 +64,20 @@ const HeroSection: React.FC = () => {
         <div className="relative h-96 lg:h-full min-h-96 flex items-center justify-center">
           <div className="absolute inset-0 bg-gradient-brand opacity-10 rounded-2xl" />
           <div className="relative z-10 w-full h-full flex items-center justify-center">
-            <div className="w-full h-full bg-gradient-to-br from-brand-100 to-brand-50 rounded-2xl shadow-xl flex items-center justify-center">
-              <div className="text-center space-y-4">
-                <div className="w-24 h-24 mx-auto bg-white rounded-full shadow-lg flex items-center justify-center">
-                  <div className="text-4xl">📚</div>
+            <div className="w-full h-full bg-gradient-to-br from-brand-100 to-brand-50 rounded-2xl shadow-xl overflow-hidden flex items-center justify-center">
+              <img
+                src="/ChatGPT_Image_May_24,_2026,_05_30_38_PM.png"
+                alt="PrepMind dashboard preview"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.nextElementSibling;
+                  if (fallback instanceof HTMLElement) fallback.style.display = 'flex';
+                }}
+              />
+              <div className="hidden text-center space-y-4 flex-col items-center justify-center p-8">
+                <div className="w-24 h-24 bg-white rounded-full shadow-lg flex items-center justify-center text-4xl">
+                  📚
                 </div>
                 <p className="text-earth-500">Dashboard Preview</p>
               </div>

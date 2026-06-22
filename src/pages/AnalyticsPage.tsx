@@ -3,7 +3,19 @@ import { DashboardLayout } from '../components/dashboard';
 import Card from '../components/common/Card';
 import { TrendingUp, Calendar, BookOpen, Target } from 'lucide-react';
 
+const WEEKLY_ACTIVITY = [
+  { day: 'Mon', hours: 2, minutes: 15 },
+  { day: 'Tue', hours: 1, minutes: 45 },
+  { day: 'Wed', hours: 3, minutes: 20 },
+  { day: 'Thu', hours: 2, minutes: 0 },
+  { day: 'Fri', hours: 4, minutes: 10 },
+  { day: 'Sat', hours: 5, minutes: 30 },
+  { day: 'Sun', hours: 1, minutes: 20 },
+];
+
 const AnalyticsPage: React.FC = () => {
+  const maxMinutes = Math.max(...WEEKLY_ACTIVITY.map((d) => d.hours * 60 + d.minutes));
+
   const stats = [
     { label: 'Total Study Hours', value: '42.5', unit: 'hours', icon: Calendar, trend: '+12%' },
     { label: 'Topics Covered', value: '28', unit: 'topics', icon: BookOpen, trend: '+3' },
@@ -43,20 +55,21 @@ const AnalyticsPage: React.FC = () => {
         <Card>
           <h2 className="text-2xl font-bold text-navy-800 mb-6">Weekly Activity</h2>
           <div className="space-y-4">
-            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
-              <div key={day} className="flex items-center gap-4">
-                <span className="w-12 font-semibold text-navy-800">{day}</span>
-                <div className="flex-1 bg-earth-200 rounded-full h-4 overflow-hidden">
-                  <div
-                    className="bg-gradient-brand h-full rounded-full"
-                    style={{ width: `${Math.random() * 100}%` }}
-                  />
+            {WEEKLY_ACTIVITY.map((entry) => {
+              const totalMinutes = entry.hours * 60 + entry.minutes;
+              const width = Math.round((totalMinutes / maxMinutes) * 100);
+              return (
+                <div key={entry.day} className="flex items-center gap-4">
+                  <span className="w-12 font-semibold text-navy-800 dark:text-earth-100">{entry.day}</span>
+                  <div className="flex-1 bg-earth-200 dark:bg-navy-700 rounded-full h-4 overflow-hidden">
+                    <div className="bg-gradient-brand h-full rounded-full" style={{ width: `${width}%` }} />
+                  </div>
+                  <span className="w-16 text-right text-sm text-earth-500">
+                    {entry.hours}h {entry.minutes}m
+                  </span>
                 </div>
-                <span className="w-16 text-right text-sm text-earth-500">
-                  {Math.floor(Math.random() * 8)}h {Math.floor(Math.random() * 60)}m
-                </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </Card>
 

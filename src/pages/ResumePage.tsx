@@ -1,19 +1,43 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Upload, CheckCircle, AlertCircle } from 'lucide-react';
 import { DashboardLayout } from '../components/dashboard';
 import Card from '../components/common/Card';
+import { useStudyStore } from '../store/studyStore';
+import { useToastStore } from '../store/toastStore';
 
 const ResumePage: React.FC = () => {
-  const resumeScore = 78;
-  const suggestions = [
+  const { resume, analyzeResume } = useStudyStore();
+  const toast = useToastStore();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = (file: File | undefined) => {
+    if (!file) return;
+    const valid =
+      file.type === 'application/pdf' ||
+      file.name.endsWith('.pdf') ||
+      file.name.endsWith('.doc') ||
+      file.name.endsWith('.docx');
+    if (!valid) {
+      toast.show('Please upload PDF or Word format', 'warning');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast.show('File must be under 10MB', 'error');
+      return;
+    }
+    analyzeResume(file.name);
+    toast.show('Resume analyzed successfully', 'success');
+  };
+
+  const resumeScore = resume?.score ?? 78;
+  const suggestions = resume?.sections ?? [
     { section: 'Contact Information', score: 95, status: 'perfect' },
     { section: 'Summary', score: 72, status: 'needs-improvement' },
     { section: 'Skills', score: 85, status: 'good' },
     { section: 'Experience', score: 68, status: 'needs-improvement' },
     { section: 'Education', score: 90, status: 'good' },
   ];
-
-  const improvements = [
+  const improvements = resume?.improvements ?? [
     { priority: 'high', text: 'Add quantifiable metrics to your work experience' },
     { priority: 'high', text: 'Include relevant keywords for ATS optimization' },
     { priority: 'medium', text: 'Expand your skills section with technical skills' },
@@ -24,19 +48,31 @@ const ResumePage: React.FC = () => {
     <DashboardLayout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-4xl font-bold text-navy-800">Resume Analyzer</h1>
-          <p className="text-earth-500 mt-2">Get AI-powered feedback to optimize your resume</p>
+          <h1 className="text-4xl font-bold text-navy-800 dark:text-earth-100">Resume Analyzer</h1>
+          <p className="text-earth-500 dark:text-earth-400 mt-2">Get AI-powered feedback to optimize your resume</p>
+          {resume && (
+            <p className="text-sm text-brand-600 mt-2">
+              Last analyzed: {resume.fileName} · {new Date(resume.analyzedAt).toLocaleString()}
+            </p>
+          )}
         </div>
 
-        <div className="bg-gradient-brand bg-opacity-5 border-2 border-dashed border-brand-300 rounded-lg p-12 text-center">
+        <div
+          className="bg-gradient-brand bg-opacity-5 border-2 border-dashed border-brand-300 rounded-lg p-12 text-center cursor-pointer"
+          onClick={() => inputRef.current?.click()}
+        >
           <Upload size={48} className="mx-auto text-brand-500 mb-4" />
-          <h3 className="text-xl font-semibold text-navy-800">Upload your resume</h3>
+          <h3 className="text-xl font-semibold text-navy-800 dark:text-earth-100">Upload your resume</h3>
           <p className="text-earth-500 mt-2">PDF or Word format (Max 10MB)</p>
+          <input
+            ref={inputRef}
+            type="file"
+            className="hidden"
+            accept=".pdf,.doc,.docx,application/pdf"
+            onChange={(e) => handleFile(e.target.files?.[0])}
+          />
           <div className="mt-6">
-            <input type="file" className="hidden" id="resume-upload" accept=".pdf,.doc,.docx" />
-            <label htmlFor="resume-upload" className="btn-outline inline-block cursor-pointer">
-              Choose File
-            </label>
+            <span className="btn-outline inline-block cursor-pointer">Choose File</span>
           </div>
         </div>
 
@@ -64,27 +100,32 @@ const ResumePage: React.FC = () => {
                     </linearGradient>
                   </defs>
                 </svg>
-                <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-bold text-navy-800">
+                <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-bold text-navy-800 dark:text-earth-100">
                   {resumeScore}
                 </p>
               </div>
-              <p className="text-lg font-semibold text-navy-800">Overall Score</p>
-              <p className="text-sm text-earth-500 mt-2">Good • Room for improvement</p>
+              <p className="text-lg font-semibold text-navy-800 dark:text-earth-100">Overall Score</p>
+              <p className="text-sm text-earth-500 mt-2">
+                {resumeScore >= 80 ? 'Strong' : resumeScore >= 70 ? 'Good' : 'Needs work'} · Room for improvement
+              </p>
             </div>
           </Card>
 
           <Card className="lg:col-span-2">
-            <h3 className="text-xl font-semibold text-navy-800 mb-4">Section Scores</h3>
+            <h3 className="text-xl font-semibold text-navy-800 dark:text-earth-100 mb-4">Section Scores</h3>
             <div className="space-y-3">
               {suggestions.map((item, index) => (
-                <div key={index} className="flex items-center justify-between pb-3 border-b border-earth-200 last:border-b-0">
+                <div
+                  key={index}
+                  className="flex items-center justify-between pb-3 border-b border-earth-200 dark:border-navy-600 last:border-b-0"
+                >
                   <div className="flex items-center gap-3">
                     {item.status === 'perfect' ? (
                       <CheckCircle size={20} className="text-green-500" />
                     ) : (
                       <AlertCircle size={20} className="text-orange-500" />
                     )}
-                    <span className="text-navy-800 font-medium">{item.section}</span>
+                    <span className="text-navy-800 dark:text-earth-100 font-medium">{item.section}</span>
                   </div>
                   <span className="text-lg font-bold text-brand-500">{item.score}%</span>
                 </div>
@@ -94,15 +135,28 @@ const ResumePage: React.FC = () => {
         </div>
 
         <Card>
-          <h3 className="text-xl font-semibold text-navy-800 mb-4">AI Improvement Suggestions</h3>
+          <h3 className="text-xl font-semibold text-navy-800 dark:text-earth-100 mb-4">AI Improvement Suggestions</h3>
           <div className="space-y-3">
             {improvements.map((suggestion, index) => (
-              <div key={index} className={`p-4 rounded-lg ${suggestion.priority === 'high' ? 'bg-red-50 border border-red-200' : 'bg-orange-50 border border-orange-200'}`}>
+              <div
+                key={index}
+                className={`p-4 rounded-lg ${
+                  suggestion.priority === 'high'
+                    ? 'bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800'
+                    : 'bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800'
+                }`}
+              >
                 <div className="flex items-start gap-3">
-                  <span className={`px-3 py-1 rounded text-xs font-semibold ${suggestion.priority === 'high' ? 'bg-red-200 text-red-700' : 'bg-orange-200 text-orange-700'}`}>
+                  <span
+                    className={`px-3 py-1 rounded text-xs font-semibold ${
+                      suggestion.priority === 'high'
+                        ? 'bg-red-200 text-red-700'
+                        : 'bg-orange-200 text-orange-700'
+                    }`}
+                  >
                     {suggestion.priority.toUpperCase()}
                   </span>
-                  <p className="text-navy-800 flex-1">{suggestion.text}</p>
+                  <p className="text-navy-800 dark:text-earth-100 flex-1">{suggestion.text}</p>
                 </div>
               </div>
             ))}

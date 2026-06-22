@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Mail, Lock, User } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { getSelectedPlan, setSelectedPlan } from '../../utils/planIntent';
 import Button from '../common/Button';
 import Input from '../common/Input';
 import { useAuthStore } from '../../store/authStore';
+import { useToastStore } from '../../store/toastStore';
+import SupabaseConfigNotice from './SupabaseConfigNotice';
 
 const SignupForm: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { signup, isLoading, error, clearError } = useAuthStore();
+  const toast = useToastStore();
+
+  useEffect(() => {
+    const plan = searchParams.get('plan');
+    if (plan) setSelectedPlan(plan);
+  }, [searchParams]);
   const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -33,14 +43,28 @@ const SignupForm: React.FC = () => {
 
     try {
       await signup(formData.email, formData.password, formData.name);
-      navigate('/dashboard');
-    } catch (err) {
+      const { user, error: storeError } = useAuthStore.getState();
+      if (storeError || !user) return;
+
+      const returnUrl = searchParams.get('returnUrl');
+      const selectedPlan = getSelectedPlan();
+      toast.show('Account created! Let us personalize your experience.', 'success');
+      if (returnUrl) {
+        navigate(returnUrl);
+      } else if (selectedPlan) {
+        navigate('/dashboard/billing');
+      } else {
+        navigate('/dashboard');
+      }
+    } catch {
       // Error is handled by the store
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <SupabaseConfigNotice />
+
       <div>
         <h1 className="text-4xl font-bold text-navy-800 mb-2">Create your account</h1>
         <p className="text-earth-500">Join PrepMind AI and start your learning journey</p>
@@ -101,9 +125,9 @@ const SignupForm: React.FC = () => {
 
       <p className="text-center text-sm text-earth-500">
         Already have an account?{' '}
-        <a href="/login" className="text-brand-500 font-semibold hover:text-brand-600">
+        <Link to="/login" className="text-brand-500 font-semibold hover:text-brand-600">
           Sign in
-        </a>
+        </Link>
       </p>
     </form>
   );

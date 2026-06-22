@@ -1,12 +1,27 @@
 import React from 'react';
 import { Check } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../common/Button';
 import Card from '../common/Card';
 import { PLANS } from '../../constants';
+import { setSelectedPlan } from '../../utils/planIntent';
+import { useAuthStore } from '../../store/authStore';
 
 const PricingSection: React.FC = () => {
+  const navigate = useNavigate();
+  const { user } = useAuthStore();
+
+  const handlePlanSelect = (planId: string) => {
+    setSelectedPlan(planId);
+    if (user) {
+      navigate('/dashboard/billing');
+      return;
+    }
+    navigate(`/signup?plan=${planId}`);
+  };
+
   return (
-    <section className="section-container bg-earth-50">
+    <section id="pricing" className="section-container bg-earth-50 scroll-mt-24">
       <div className="text-center space-y-4 mb-16">
         <h2 className="text-4xl md:text-5xl font-bold text-navy-800">Simple, Transparent Pricing</h2>
         <p className="text-xl text-earth-500 max-w-2xl mx-auto">Choose the perfect plan for your learning goals</p>
@@ -15,7 +30,7 @@ const PricingSection: React.FC = () => {
       <div className="grid md:grid-cols-3 gap-8">
         {PLANS.map((plan, index) => (
           <Card
-            key={index}
+            key={plan.id}
             variant={index === 1 ? 'elevated' : 'default'}
             className={index === 1 ? 'ring-2 ring-brand-500 relative scale-105' : ''}
           >
@@ -41,6 +56,7 @@ const PricingSection: React.FC = () => {
                 fullWidth
                 size="lg"
                 className={index === 1 ? 'btn-primary' : 'btn-outline'}
+                onClick={() => handlePlanSelect(plan.id)}
               >
                 Get Started
               </Button>
