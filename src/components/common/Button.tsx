@@ -29,13 +29,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-semibold rounded-lg transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed';
+      'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group';
 
     const variantStyles = {
-      primary: 'bg-gradient-brand text-white hover:shadow-glow',
-      secondary: 'bg-earth-100 text-navy-800 hover:bg-earth-200',
-      outline: 'border-2 border-brand-500 text-brand-500 hover:bg-brand-50',
-      ghost: 'text-brand-500 hover:bg-brand-50',
+      primary: 'bg-gradient-brand text-white hover:shadow-glow hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2',
+      secondary: 'bg-earth-100 text-navy-800 hover:bg-earth-200 focus:outline-none focus:ring-2 focus:ring-earth-500',
+      outline: 'border-2 border-brand-500 text-brand-500 hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-brand-500',
+      ghost: 'text-brand-500 hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2',
     };
 
     const sizeStyles = {
@@ -59,6 +59,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         `}
         {...props}
       >
+        {/* Shimmer effect on hover */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-10 group-hover:animate-shimmer" />
+        
         {isLoading ? (
           <>
             <div className="animate-spin">
@@ -71,9 +74,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           </>
         ) : (
           <>
-            {icon && iconPosition === 'left' && icon}
+            {icon && iconPosition === 'left' && <span className="group-hover:translate-x-0.5 transition-transform">{icon}</span>}
             {children}
-            {icon && iconPosition === 'right' && icon}
+            {icon && iconPosition === 'right' && <span className="group-hover:translate-x-0.5 transition-transform">{icon}</span>}
           </>
         )}
       </button>

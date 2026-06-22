@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
+import AnimatedBackground from './components/common/AnimatedBackground';
 import ToastContainer from './components/common/ToastContainer';
 import { ProtectedRoute, PublicOnlyRoute } from './components/routing/RouteGuards';
 import MarketingLayout from './layouts/MarketingLayout';
@@ -34,6 +35,7 @@ function App() {
 
   return (
     <Router>
+      <AnimatedBackground />
       <ToastContainer />
       <Routes>
         <Route element={<MarketingLayout />}>
