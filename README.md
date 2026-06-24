@@ -65,84 +65,124 @@ Our system is engineered to scale from a single user study tool into a fully aut
 - **Cloud Native Delivery**: Vercel-optimized hosting and automated deployment pipelines.
 - **Future Workflow Automations**: Integrated n8n webhooks and triggers.
 
-### 📊 Visual Architecture Diagram
+### 🌐 1. High-Level Ecosystem (Microservices View)
 
 ```mermaid
-graph TD
-    %% Define Advanced Glow & Gradient Styles
-    classDef ui fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#fff,stroke-dasharray: 5 5
-    classDef ai fill:#1e1b4b,stroke:#a855f7,stroke-width:2px,color:#fff
+graph TB
+    %% Core Styling with High-Contrast Cyber Theme
+    classDef frontend fill:#0f172a,stroke:#38bdf8,stroke-width:3px,color:#fff,stroke-dasharray: 5 5
+    classDef ai_core fill:#1e1b4b,stroke:#a855f7,stroke-width:3px,color:#fff
     classDef prep fill:#064e3b,stroke:#34d399,stroke-width:3px,color:#fff
-    classDef data fill:#451a03,stroke:#fbbf24,stroke-width:2px,color:#fff
-    classDef external fill:#111827,stroke:#ef4444,stroke-width:2px,color:#fff
-    classDef automation fill:#3b0764,stroke:#d946ef,stroke-width:2px,color:#fff
-
-    %% User Interaction Flow
-    subgraph Client_Space [🌐 User Environment]
-        U1((Student Device)):::ui
-        U2((Interviewer Device)):::ui
-    end
-
-    %% Components
-    subgraph UI_Layer [🖥️ Frontend Experience Layer]
-        A[Dynamic Dashboard UI]:::ui
-        B[Flashcards & Quiz Engine]:::ui
-        C[Live Web IDE for DSA]:::ui
-        State[Zustand State Manager]:::ui
-    end
-
-    subgraph AI_Layer [🧠 Deep AI Learning Engine]
-        D[PDF OCR & Context Analyzer]:::ai
-        E[ATS Resume Parser]:::ai
-        LLM[OpenAI / Claude LLM Node]:::ai
-        Vec[Vector Embeddings Generator]:::ai
-    end
-
-    subgraph Prep_Layer [🎯 Placement Preparation Layer]
-        F[Mock Interview Simulator]:::prep
-        G[Algorithm Auto-Grader]:::prep
-    end
-
-    subgraph Backend_Layer [🗄️ Backend & Data Layer]
-        H[(Supabase Auth / JWT)]:::data
-        I[(PostgreSQL Relational DB)]:::data
-        J[(pgvector Embedded Data)]:::data
-        K[Real-time WebSocket Sync]:::data
-    end
-
-    subgraph Infra_Layer [⚙️ Cloud Infrastructure]
-        Vercel[Vercel Edge CDN]:::external
-        N8N[n8n Workflow Automations]:::automation
-        Cloudinary[Cloudinary Media CDN]:::external
-    end
-
-    %% Complex Data Pipelines (Animated Flow)
-    Client_Space ==>|HTTP/WSS Request| UI_Layer
-    UI_Layer -.->|State Mutates| State
+    classDef db fill:#451a03,stroke:#fbbf24,stroke-width:3px,color:#fff
+    classDef edge fill:#111827,stroke:#ef4444,stroke-width:3px,color:#fff
+    classDef external fill:#3b0764,stroke:#d946ef,stroke-width:2px,color:#fff
     
-    A -->|Fetch Analytics| K
-    B -->|Submit Answers| I
-    C -->|Run Code Snippet| G
+    %% Users
+    subgraph Users [Global Traffic]
+        U1((Students)):::frontend
+        U2((Interviewers)):::frontend
+    end
     
-    %% AI Flows
-    UI_Layer ==>|Upload Document| D
-    D -->|Extract Text| Vec
-    Vec -->|Query/Store Embeddings| J
-    J -->|Retrieve Context| LLM
-    LLM -->|Generate Quiz / Summary| B
+    %% Edge Network
+    subgraph Edge [Vercel Edge Network]
+        WAF[Web Application Firewall]:::edge
+        CDN[Global Asset CDN]:::edge
+        Router[Next.js App Router]:::edge
+    end
     
-    %% Prep Flows
-    UI_Layer ==>|Upload Resume| E
-    E -->|Analyze ATS Score| LLM
-    F -->|Voice/Text Input| LLM
-    LLM -.->|Real-time Feedback| F
+    %% Frontend Application
+    subgraph Client [Client Application]
+        State((Zustand Store)):::frontend
+        AuthUI[Secure Login Forms]:::frontend
+        Dashboard[Real-time Metrics Dashboard]:::frontend
+        Quizzes[Interactive Quiz Engine]:::frontend
+        IDE[Monaco Web Editor for DSA]:::frontend
+    end
     
-    %% Infrastructure Connections
-    I <--> K
-    H -->|Validate Access| K
-    Vercel -->|Host Static Assets| Client_Space
-    I -.->|Trigger Webhooks| N8N
-    UI_Layer -->|Upload Images| Cloudinary
+    %% AI Services
+    subgraph AI [Deep Intelligence Fabric]
+        Agent1[OpenAI GPT-4 Turbo Pipeline]:::ai_core
+        Agent2[PDF Extraction & Chunking]:::ai_core
+        Agent3[ATS Resume Parsing Model]:::ai_core
+        Embed[Vector Embeddings]:::ai_core
+    end
+    
+    %% Prep Services
+    subgraph PrepEngine [Placement & Interview Engine]
+        Mock[Real-time Voice Mock Interviews]:::prep
+        Judge[Algorithmic Auto-Grader Sandbox]:::prep
+    end
+    
+    %% Data Persistence
+    subgraph Database [Distributed Data Layer]
+        AuthDB[(Supabase Auth / RLS)]:::db
+        RelDB[(PostgreSQL Relational)]:::db
+        VecDB[(pgvector Semantic Search)]:::db
+        Cache[(Redis Real-time Sync)]:::db
+    end
+    
+    %% External Integrations
+    subgraph Integrations [3rd-Party Automations]
+        N8N[n8n Workflow Webhooks]:::external
+        Stripe[Stripe/Razorpay Billing]:::external
+        Cloudinary[Cloudinary Media Hosting]:::external
+    end
+    
+    %% Flow Mapping (Bi-directional and Async)
+    Users == "HTTPS/TLS 1.3" ==> Edge
+    Edge --> Client
+    
+    Client -.->|State Hydration| State
+    State <--> Dashboard
+    
+    %% Authentication Flow
+    AuthUI ==>|JWT Tokens| AuthDB
+    AuthDB -->|Secure Session| Dashboard
+    
+    %% AI Pipeline
+    Quizzes -->|Upload Notes| Agent2
+    Agent2 -->|Text Chunks| Embed
+    Embed -->|Store Vectors| VecDB
+    VecDB <-->|Semantic Search| Agent1
+    Agent1 -->|Generate Questions| Quizzes
+    
+    %% Prep Pipeline
+    IDE -->|Submit Code| Judge
+    Judge -->|Execution Results| Dashboard
+    Dashboard -->|Upload Resume| Agent3
+    Agent3 -->|Parse & Score| RelDB
+    
+    %% Webhook Events
+    RelDB -.->|Row Update Triggers| N8N
+    N8N -.->|Email Campaigns| Users
+    Dashboard -->|Checkout| Stripe
+    Dashboard -->|Upload Avatars| Cloudinary
+```
+
+### ⚡ 2. Animated Interaction Sequence (PDF to Quiz Flow)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant U as Student (Client)
+    participant UI as PrepMind UI
+    participant AI as AI Extraction Node
+    participant VDB as pgvector Database
+    participant DB as PostgreSQL
+    
+    U->>UI: Uploads Study Material (PDF)
+    activate UI
+    UI->>AI: Streams File to Extraction Node (Async)
+    activate AI
+    AI-->>AI: Perform OCR & Chunking
+    AI->>VDB: Generate & Store Embeddings
+    VDB-->>AI: Confirmation of Storage
+    AI->>AI: GPT-4 Turbo Synthesizes Quiz
+    AI->>DB: Save Quiz Data & Flashcards
+    DB-->>UI: Real-time Supabase Subscription Update
+    deactivate AI
+    UI-->>U: Renders Confetti Animation & Quiz Ready!
+    deactivate UI
 ```
 
 ---
