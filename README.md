@@ -1,6 +1,6 @@
 <div align="center">
-  <!-- Customized Logo with Glow -->
-  <img src="https://prep-mind-ai-chi.vercel.app/vite.svg" alt="PrepMind AI Logo" width="180" height="180" style="filter: drop-shadow(0 0 20px #FF6B00);" />
+  <!-- Customized High-Tech AI Logo -->
+  <img src="public/logo.png" alt="PrepMind AI Core Logo" width="220" height="220" style="border-radius: 20%; filter: drop-shadow(0 0 25px rgba(255, 107, 0, 0.6));" />
   
   <br />
   
