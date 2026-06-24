@@ -1,6 +1,23 @@
-# PrepMind AI - AI-Powered EdTech SaaS Platform
+<div align="center">
+  <!-- Customized Logo with Glow -->
+  <img src="https://prep-mind-ai-chi.vercel.app/vite.svg" alt="PrepMind AI Logo" width="180" height="180" style="filter: drop-shadow(0 0 20px #FF6B00);" />
+  
+  <br />
+  
+  # 🧠 PrepMind AI
+  
+  ### AI-Powered EdTech SaaS Platform
 
-A modern, production-ready EdTech SaaS platform combining intelligent study tools, placement preparation, and coding interview prep to help students excel in their exams and land their dream jobs.
+  [![React](https://img.shields.io/badge/React-18-blue?style=for-the-badge&logo=react)](https://react.dev/)
+  [![Vite](https://img.shields.io/badge/Vite-5.0-646CFF?style=for-the-badge&logo=vite)](https://vitejs.dev/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+  [![Supabase](https://img.shields.io/badge/Supabase-DB-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+</div>
+
+<br />
+
+> **A modern, production-ready EdTech SaaS platform** combining intelligent study tools, placement preparation, and coding interview prep to help students excel in their exams and land their dream jobs.
 
 ## Features
 
@@ -21,6 +38,87 @@ A modern, production-ready EdTech SaaS platform combining intelligent study tool
 - **Real-time Analytics**: Track study progress and achievements
 - **Subscription Management**: Flexible pricing plans
 - **User Settings**: Profile management and preferences
+
+---
+
+## 🏗️ 5-Layer Platform Architecture
+
+Our system is engineered to scale from a single user study tool into a fully automated EdTech ecosystem.
+
+### 1. Frontend Experience Layer
+- **Intelligent Dashboard**: High-performance UI for tracking analytics, quizzes, and resumes.
+- **Interactive Learning Spaces**: Dynamic flashcard decks and live coding environments.
+
+### 2. AI Learning Engine Layer
+- **PDF Intelligence**: Context-aware document summarization and insights.
+- **Resume ATS Scanner**: Automated parsing and grading of user resumes.
+
+### 3. Placement Preparation Layer
+- **Mock Interview Engine**: Technical and HR round simulations.
+- **DSA Coding Challenges**: Company-specific algorithmic problem sets.
+
+### 4. Backend & Auth Layer
+- **Supabase Authentication**: Secure role-based access and session handling.
+- **PostgreSQL Database**: Relational storage for user profiles, analytics, and content.
+
+### 5. Infrastructure Layer
+- **Cloud Native Delivery**: Vercel-optimized hosting and automated deployment pipelines.
+- **Future Workflow Automations**: Integrated n8n webhooks and triggers.
+
+### 📊 Visual Architecture Diagram
+
+```mermaid
+graph TD
+    %% Define Styles
+    classDef ui fill:#0f172a,stroke:#ff6b00,stroke-width:2px,color:#fff
+    classDef ai fill:#1e1b4b,stroke:#a855f7,stroke-width:2px,color:#fff
+    classDef prep fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#fff
+    classDef data fill:#451a03,stroke:#fbbf24,stroke-width:2px,color:#fff
+
+    %% Components
+    subgraph UI_Layer [Frontend Experience Layer]
+        A[Dashboard UI]:::ui
+        B[Flashcards & Quizzes]:::ui
+        C[Live Coding IDE]:::ui
+    end
+
+    subgraph AI_Layer [AI Learning Engine Layer]
+        D[PDF Context Analyzer]:::ai
+        E[Resume ATS Scanner]:::ai
+    end
+
+    subgraph Prep_Layer [Placement Preparation Layer]
+        F[Mock Interview Engine]:::prep
+        G[DSA Challenges]:::prep
+    end
+
+    subgraph Backend_Layer [Backend & Data Layer]
+        H[(Supabase Auth)]:::data
+        I[(PostgreSQL DB)]:::data
+    end
+
+    %% Flow
+    UI_Layer -->|Triggers Evaluation| AI_Layer
+    UI_Layer -->|Starts Practice| Prep_Layer
+    AI_Layer -->|Fetches Documents| Backend_Layer
+    Prep_Layer -->|Saves Progress| Backend_Layer
+    Backend_Layer -->|Real-time Updates| UI_Layer
+```
+
+---
+
+## 💻 Animated Skills & Usage Architecture
+
+<div align="center">
+  <h3>Core Technologies</h3>
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E" />
+  <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
+</div>
+
+<br />
 
 ## Tech Stack
 
@@ -230,14 +328,15 @@ Breakpoints (Tailwind default):
 
 All pages are mobile-responsive with appropriate adjustments.
 
-## Future Enhancements
+## 🚀 Future Enhancements
 
-### Phase 2
-- [ ] n8n automation workflows
-- [ ] Cloudinary image storage integration
-- [ ] Razorpay payment integration
-- [ ] Email notifications
-- [ ] Advanced analytics
+### Phase 2: Advanced Integrations
+- [ ] **n8n Automation Workflows**: Automated email marketing, user retention loops, and data syncing.
+- [ ] **Conversational AI Interviewers**: Voice-to-text integration for real-time realistic interview simulations.
+- [ ] **Cloudinary Image Storage**: Seamless media handling.
+- [ ] **Razorpay Payment Integration**: Indian-market optimized payment gateways.
+- [ ] **Email Notifications**: Action-driven transactional emails.
+- [ ] **Advanced Analytics**: Granular predictive scoring for placement readiness.
 
 ### Phase 3
 - [ ] Admin dashboard
