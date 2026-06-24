@@ -69,40 +69,80 @@ Our system is engineered to scale from a single user study tool into a fully aut
 
 ```mermaid
 graph TD
-    %% Define Styles
-    classDef ui fill:#0f172a,stroke:#ff6b00,stroke-width:2px,color:#fff
+    %% Define Advanced Glow & Gradient Styles
+    classDef ui fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#fff,stroke-dasharray: 5 5
     classDef ai fill:#1e1b4b,stroke:#a855f7,stroke-width:2px,color:#fff
-    classDef prep fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#fff
+    classDef prep fill:#064e3b,stroke:#34d399,stroke-width:3px,color:#fff
     classDef data fill:#451a03,stroke:#fbbf24,stroke-width:2px,color:#fff
+    classDef external fill:#111827,stroke:#ef4444,stroke-width:2px,color:#fff
+    classDef automation fill:#3b0764,stroke:#d946ef,stroke-width:2px,color:#fff
+
+    %% User Interaction Flow
+    subgraph Client_Space [🌐 User Environment]
+        U1((Student Device)):::ui
+        U2((Interviewer Device)):::ui
+    end
 
     %% Components
-    subgraph UI_Layer [Frontend Experience Layer]
-        A[Dashboard UI]:::ui
-        B[Flashcards & Quizzes]:::ui
-        C[Live Coding IDE]:::ui
+    subgraph UI_Layer [🖥️ Frontend Experience Layer]
+        A[Dynamic Dashboard UI]:::ui
+        B[Flashcards & Quiz Engine]:::ui
+        C[Live Web IDE for DSA]:::ui
+        State[Zustand State Manager]:::ui
     end
 
-    subgraph AI_Layer [AI Learning Engine Layer]
-        D[PDF Context Analyzer]:::ai
-        E[Resume ATS Scanner]:::ai
+    subgraph AI_Layer [🧠 Deep AI Learning Engine]
+        D[PDF OCR & Context Analyzer]:::ai
+        E[ATS Resume Parser]:::ai
+        LLM[OpenAI / Claude LLM Node]:::ai
+        Vec[Vector Embeddings Generator]:::ai
     end
 
-    subgraph Prep_Layer [Placement Preparation Layer]
-        F[Mock Interview Engine]:::prep
-        G[DSA Challenges]:::prep
+    subgraph Prep_Layer [🎯 Placement Preparation Layer]
+        F[Mock Interview Simulator]:::prep
+        G[Algorithm Auto-Grader]:::prep
     end
 
-    subgraph Backend_Layer [Backend & Data Layer]
-        H[(Supabase Auth)]:::data
-        I[(PostgreSQL DB)]:::data
+    subgraph Backend_Layer [🗄️ Backend & Data Layer]
+        H[(Supabase Auth / JWT)]:::data
+        I[(PostgreSQL Relational DB)]:::data
+        J[(pgvector Embedded Data)]:::data
+        K[Real-time WebSocket Sync]:::data
     end
 
-    %% Flow
-    UI_Layer -->|Triggers Evaluation| AI_Layer
-    UI_Layer -->|Starts Practice| Prep_Layer
-    AI_Layer -->|Fetches Documents| Backend_Layer
-    Prep_Layer -->|Saves Progress| Backend_Layer
-    Backend_Layer -->|Real-time Updates| UI_Layer
+    subgraph Infra_Layer [⚙️ Cloud Infrastructure]
+        Vercel[Vercel Edge CDN]:::external
+        N8N[n8n Workflow Automations]:::automation
+        Cloudinary[Cloudinary Media CDN]:::external
+    end
+
+    %% Complex Data Pipelines (Animated Flow)
+    Client_Space ==>|HTTP/WSS Request| UI_Layer
+    UI_Layer -.->|State Mutates| State
+    
+    A -->|Fetch Analytics| K
+    B -->|Submit Answers| I
+    C -->|Run Code Snippet| G
+    
+    %% AI Flows
+    UI_Layer ==>|Upload Document| D
+    D -->|Extract Text| Vec
+    Vec -->|Query/Store Embeddings| J
+    J -->|Retrieve Context| LLM
+    LLM -->|Generate Quiz / Summary| B
+    
+    %% Prep Flows
+    UI_Layer ==>|Upload Resume| E
+    E -->|Analyze ATS Score| LLM
+    F -->|Voice/Text Input| LLM
+    LLM -.->|Real-time Feedback| F
+    
+    %% Infrastructure Connections
+    I <--> K
+    H -->|Validate Access| K
+    Vercel -->|Host Static Assets| Client_Space
+    I -.->|Trigger Webhooks| N8N
+    UI_Layer -->|Upload Images| Cloudinary
 ```
 
 ---
