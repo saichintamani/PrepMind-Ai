@@ -98,15 +98,18 @@ export const useAuthStore = create<AuthState>((set) => ({
       const { data, error } = await authService.signUp(email, password, name);
       if (error) throw error;
 
-      if (data.user) {
-        const user = await resolveUserProfile(data.user.id, data.user.email!, name);
+      if (data.session) {
+        const user = await resolveUserProfile(data.user!.id, data.user!.email!, name);
         set({ user, isLoading: false });
-      } else if (data.session) {
-        set({ isLoading: false });
+      } else if (data.user) {
+        set({
+          isLoading: false,
+          error: 'Check your email to confirm your account before signing in. (Or disable Email Confirmations in Supabase Auth settings)',
+        });
       } else {
         set({
           isLoading: false,
-          error: 'Check your email to confirm your account before signing in.',
+          error: 'An unexpected error occurred during signup.',
         });
       }
     } catch (error: unknown) {

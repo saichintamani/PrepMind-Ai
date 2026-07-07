@@ -57,6 +57,11 @@ CREATE POLICY "Users can update own profile"
   USING (auth.uid() = id)
   WITH CHECK (auth.uid() = id);
 
+CREATE POLICY "Users can insert own profile"
+  ON users FOR INSERT
+  TO authenticated
+  WITH CHECK (auth.uid() = id);
+
 -- Uploads table
 CREATE TABLE IF NOT EXISTS uploads (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
