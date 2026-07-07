@@ -23,8 +23,11 @@ const NotesPage: React.FC = () => {
     ? REFERENCE_MATERIALS.find((r) => r.id === selected.referenceId)
     : null;
 
+  const [isUploading, setIsUploading] = useState(false);
+
   const handleFiles = (files: FileList | null) => {
     if (!files?.length) return;
+    const validFiles: File[] = [];
     Array.from(files).forEach((file) => {
       if (file.type !== 'application/pdf' && !file.name.endsWith('.pdf')) {
         toast.show(`${file.name}: only PDF files are supported`, 'warning');
@@ -34,9 +37,21 @@ const NotesPage: React.FC = () => {
         toast.show(`${file.name} exceeds 50MB limit`, 'error');
         return;
       }
-      addUpload(file);
-      toast.show(`Uploaded ${file.name}`, 'success');
+      validFiles.push(file);
     });
+
+    if (validFiles.length > 0) {
+      setIsUploading(true);
+      toast.show('Uploading and analyzing PDFs...', 'info');
+      
+      setTimeout(() => {
+        validFiles.forEach((file) => {
+          addUpload(file);
+          toast.show(`Analyzed ${file.name}`, 'success');
+        });
+        setIsUploading(false);
+      }, 1500);
+    }
   };
 
   const handleImportLibrary = () => {
@@ -80,16 +95,18 @@ const NotesPage: React.FC = () => {
         </div>
 
         <div
-          className="bg-gradient-brand bg-opacity-5 border-2 border-dashed border-brand-300 rounded-lg p-12 text-center cursor-pointer"
-          onClick={() => dropRef.current?.click()}
+          className={`bg-gradient-brand bg-opacity-5 border-2 border-dashed border-brand-300 rounded-lg p-12 text-center ${isUploading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+          onClick={() => !isUploading && dropRef.current?.click()}
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => {
             e.preventDefault();
-            handleFiles(e.dataTransfer.files);
+            if (!isUploading) handleFiles(e.dataTransfer.files);
           }}
         >
-          <Upload size={48} className="mx-auto text-brand-500 mb-4" />
-          <h3 className="text-xl font-semibold text-navy-800 dark:text-earth-100">Drop your PDFs here</h3>
+          <Upload size={48} className={`mx-auto text-brand-500 mb-4 ${isUploading ? 'animate-bounce' : ''}`} />
+          <h3 className="text-xl font-semibold text-navy-800 dark:text-earth-100">
+            {isUploading ? 'Analyzing PDFs...' : 'Drop your PDFs here'}
+          </h3>
           <p className="text-earth-500 mt-2">or click to browse (Max 50MB)</p>
           <input
             ref={dropRef}
@@ -97,6 +114,7 @@ const NotesPage: React.FC = () => {
             accept=".pdf,application/pdf"
             multiple
             className="hidden"
+            disabled={isUploading}
             onChange={(e) => handleFiles(e.target.files)}
           />
         </div>

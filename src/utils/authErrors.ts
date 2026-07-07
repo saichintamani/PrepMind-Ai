@@ -1,16 +1,16 @@
-import { getSupabaseConfigMessage, isSupabaseConfigured } from '../lib/supabaseConfig';
+import { isSupabaseConfigured } from '../lib/supabaseConfig';
 
 export function formatAuthError(error: unknown): string {
-  if (!isSupabaseConfigured()) {
-    return getSupabaseConfigMessage();
-  }
-
   const message =
     error instanceof Error
       ? error.message
       : typeof error === 'object' && error !== null && 'message' in error
         ? String((error as { message: unknown }).message)
         : 'Something went wrong. Please try again.';
+
+  if (!isSupabaseConfigured()) {
+    return message;
+  }
 
   const normalized = message.toLowerCase();
 

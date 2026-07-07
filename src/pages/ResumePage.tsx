@@ -10,6 +10,8 @@ const ResumePage: React.FC = () => {
   const toast = useToastStore();
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [isAnalyzing, setIsAnalyzing] = React.useState(false);
+
   const handleFile = (file: File | undefined) => {
     if (!file) return;
     const valid =
@@ -25,8 +27,13 @@ const ResumePage: React.FC = () => {
       toast.show('File must be under 10MB', 'error');
       return;
     }
-    analyzeResume(file.name);
-    toast.show('Resume analyzed successfully', 'success');
+    setIsAnalyzing(true);
+    toast.show('Analyzing resume with AI...', 'info');
+    setTimeout(() => {
+      analyzeResume(file.name);
+      setIsAnalyzing(false);
+      toast.show('Resume analyzed successfully', 'success');
+    }, 1500);
   };
 
   const resumeScore = resume?.score ?? 78;
@@ -58,11 +65,13 @@ const ResumePage: React.FC = () => {
         </div>
 
         <div
-          className="bg-gradient-brand bg-opacity-5 border-2 border-dashed border-brand-300 rounded-lg p-12 text-center cursor-pointer"
-          onClick={() => inputRef.current?.click()}
+          className={`bg-gradient-brand bg-opacity-5 border-2 border-dashed border-brand-300 rounded-lg p-12 text-center ${isAnalyzing ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+          onClick={() => !isAnalyzing && inputRef.current?.click()}
         >
-          <Upload size={48} className="mx-auto text-brand-500 mb-4" />
-          <h3 className="text-xl font-semibold text-navy-800 dark:text-earth-100">Upload your resume</h3>
+          <Upload size={48} className={`mx-auto text-brand-500 mb-4 ${isAnalyzing ? 'animate-bounce' : ''}`} />
+          <h3 className="text-xl font-semibold text-navy-800 dark:text-earth-100">
+            {isAnalyzing ? 'Analyzing with AI...' : 'Upload your resume'}
+          </h3>
           <p className="text-earth-500 mt-2">PDF or Word format (Max 10MB)</p>
           <input
             ref={inputRef}
@@ -70,9 +79,12 @@ const ResumePage: React.FC = () => {
             className="hidden"
             accept=".pdf,.doc,.docx,application/pdf"
             onChange={(e) => handleFile(e.target.files?.[0])}
+            disabled={isAnalyzing}
           />
           <div className="mt-6">
-            <span className="btn-outline inline-block cursor-pointer">Choose File</span>
+            <span className={`btn-outline inline-block ${isAnalyzing ? 'pointer-events-none' : 'cursor-pointer'}`}>
+              Choose File
+            </span>
           </div>
         </div>
 
